@@ -9,10 +9,11 @@ import OrderSummary from "./containers/OrderSummary";
 import Checkout from "./containers/Checkout";
 import ProductDetail from "./containers/ProductDetail";
 import Profile from "./containers/Profile";
+import HomepageLayout from "./containers/Home";
 
 const BaseRouter = () => (
   <Hoc>
-    <Route exact path="/" component={ProductList} />
+    <Route exact path="/" component={HomepageLayout} />
     <Route path="/login" component={Login} />
     <Route path="/signup" component={Signup} />
 

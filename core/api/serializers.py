@@ -20,6 +20,7 @@ class CouponSerializer(serializers.ModelSerializer):
 
 class ItemSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
+    origin = serializers.SerializerMethodField()
     label = serializers.SerializerMethodField()
 
     class Meta:
@@ -30,6 +31,7 @@ class ItemSerializer(serializers.ModelSerializer):
             'price',
             'discount_price',
             'category',
+            'origin',
             'label',
             'slug',
             'description',
@@ -38,6 +40,9 @@ class ItemSerializer(serializers.ModelSerializer):
 
     def get_category(self, obj):
         return obj.get_category_display()
+
+    def get_origin(self, obj):
+        return obj.get_origin_display()
 
     def get_label(self, obj):
         return obj.get_label_display()
