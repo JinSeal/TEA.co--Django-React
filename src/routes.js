@@ -7,6 +7,8 @@ import Signup from "./containers/Signup";
 import ProductList from "./containers/ProductList";
 import OrderSummary from "./containers/OrderSummary";
 import Checkout from "./containers/Checkout";
+import ProductDetail from "./containers/ProductDetail";
+import Profile from "./containers/Profile";
 
 const BaseRouter = () => (
   <Hoc>
@@ -14,9 +16,12 @@ const BaseRouter = () => (
     <Route path="/login" component={Login} />
     <Route path="/signup" component={Signup} />
 
-    <Route path="/products" component={ProductList} />
+    <Route exact path="/products" component={ProductList} />
+    <Route path="/products/:productID" component={ProductDetail} />
     <Route path="/order-summary" component={OrderSummary} />
     <Route path="/checkout" component={Checkout} />
+    <Route path="/profile" component={Profile} />
+
 
   </Hoc>
 );
