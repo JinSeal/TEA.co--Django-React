@@ -4,9 +4,11 @@ from django.shortcuts import render, get_object_or_404
 from django.http import Http404
 from django.utils import timezone
 from django_countries import countries
+
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from .serializers import ItemSerializer, OrderSerializer, ItemDetailSerializer, AddressSerializer, PaymentSerializer
@@ -22,10 +24,27 @@ class UserIDView(APIView):
         return Response({'userID': request.user.id}, status=HTTP_200_OK)
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 9
+    page_size_query_param = 'page_size'
+    max_page_size = 90
+
+
 class ItemListView(ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
     queryset = Item.objects.all()
+    pagination_class = StandardResultsSetPagination
+    # page_number = request.GET.get('page')
+    # page_obj = paginator.get_page(page_number)
+    # return render(request, 'list.html', {'page_obj': page_obj})
+
+    # def get(self, request, *args, **kwargs):
+    #     print(request)
+    #     item_list = Item.objects.all()
+    #     paginator = Paginator(item_list, 9)
+    #     page_number = request.data.get('page')
+    #     return Response(paginator.get_page(page_number), HTTP_200_OK)
 
 
 class ItemDetailView(RetrieveAPIView):
