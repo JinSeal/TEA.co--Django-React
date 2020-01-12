@@ -91,7 +91,8 @@ class Variation(models.Model):
 class ItemVariation(models.Model):
     variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
     value = models.CharField(max_length=50)
-    attachment = models.ImageField(blank=True)
+    attachment = models.ImageField(blank=True, null=True)
+    price = models.FloatField(blank=True, null=True)
 
     class Meta:
         unique_together = (

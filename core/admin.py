@@ -60,7 +60,7 @@ class AddressAdmin(admin.ModelAdmin):
 
 
 class ItemVariationAdmin(admin.ModelAdmin):
-    list_display = ['variation', 'value', 'attachment']
+    list_display = ['variation', 'value', 'attachment', 'price']
     list_filter = ['variation', 'variation__item']
     search_fields = ['value']
 

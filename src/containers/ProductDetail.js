@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Button, Card, Container, Dimmer, Divider, Form, Grid, Header, Icon, Image, Item, Label, Loader, Message, Segment, Select } from 'semantic-ui-react'
+import { Button, Card, Comment, Container, Dimmer, Divider, Form, Grid, Header, Icon, Image, Item, Label, Loader, Menu, Message, Segment, Select } from 'semantic-ui-react'
 import axios from 'axios'
 import { productDetailURL, addToCartURL } from '../constants'
 import { authAxios } from '../utils'
@@ -12,8 +12,7 @@ class ProductDetail extends Component {
         loading: false,
         error: null,
         data: [],
-        formVisible: false,
-        formData: {}
+        formData: {},
     };
 
     componentDidMount() {
@@ -25,8 +24,6 @@ class ProductDetail extends Component {
         this.setState({ loading: true })
         axios.get(productDetailURL(params.productID))
             .then(res => {
-                console.log(res.data);
-
                 this.setState({ data: res.data, loading: false });
             })
             .catch(err => {
@@ -34,12 +31,6 @@ class ProductDetail extends Component {
             })
     }
 
-    handleToggleForm = () => {
-        const { formVisible } = this.state
-        this.setState({
-            formVisible: !formVisible
-        })
-    }
 
     handleFormatData = formData => {
         return Object.keys(formData).map(key => {
@@ -47,18 +38,17 @@ class ProductDetail extends Component {
         })
     }
 
-    handleChange = (e, { name, value }) => {
+    handleClick = (e, { name, content }) => {
         const { formData } = this.state
         const updatedFormData = {
             ...formData,
-            [name]: value
+            [name]: content
         }
         this.setState({ formData: updatedFormData })
-
     }
 
     handleAddToCart = slug => {
-        this.setState({ loading: true });
+        this.setState({ loading: true, error: null });
         const { formData } = this.state;
         const variations = this.handleFormatData(formData)
         authAxios.post(addToCartURL, { slug, variations })
@@ -71,11 +61,25 @@ class ProductDetail extends Component {
             })
     }
 
+    renderLabelColor = value => {
+        switch (value) {
+            case "New":
+                return 'orange'
+            case "Out of Stock":
+                return 'grey'
+            case "Popular":
+                return 'violet'
+            case "Clearance":
+                return 'red'
+        }
+
+    }
+
     render() {
-        const { data, error, formData, formVisible, loading } = this.state
+        const { data, error, formData, loading } = this.state
         const item = data
         return (
-            <Container>
+            <Container style={{ margin: '5em 0' }}>
                 {loading && (
                     <Segment>
                         <Dimmer active inverted>
@@ -92,91 +96,77 @@ class ProductDetail extends Component {
                         content={JSON.stringify(error)}
                     />
                 )}
-                <Grid columns={2} divided>
+                <Grid columns={2} >
                     <Grid.Row>
                         <Grid.Column>
                             <Card
                                 fluid
                                 image={item.image}
-                                header={item.title}
-                                meta={
-                                    <React.Fragment>
-                                        {item.category}
-                                        {item.discount_price && <Label color={item.label === 'primary' ? 'blue' : item.label === 'secondary' ? 'green' : 'olive'}>{item.label}</Label>}
-
-                                    </React.Fragment>
-                                }
-                                description={item.description}
-                                extra={(
-                                    <Item.Extra>
-                                        <Button fluid primary floated='right' icon labelPosition="right" onClick={this.handleToggleForm}>
-                                            Add to Cart <Icon name='cart plus' />
-                                        </Button>
-
-                                    </Item.Extra>
-                                )}
                             />
-                            {formVisible &&
-                                <React.Fragment>
-                                    <Divider />
-                                    <Form>
-                                        {data.variations.map(variation => {
-                                            const name = variation.name.toLowerCase()
-                                            return <Form.Field key={variation.id}>
-                                                <Select
-                                                    name={name}
-                                                    onChange={this.handleChange}
-                                                    options={variation.item_variations.map(item_variation => {
-                                                        return {
-                                                            key: item_variation.id,
-                                                            text: item_variation.value,
-                                                            value: item_variation.id
-                                                        }
-                                                    })}
-                                                    placeholder={`Choose a ${name}`}
-                                                    selection
-                                                    value={formData[name]}
-                                                />
-
-                                            </Form.Field>
-                                        })}
-
-                                        <Form.Button onClick={() => this.handleAddToCart(item.slug)}>
-                                            Submit
-                                </Form.Button>
-                                    </Form>
-                                </React.Fragment>
-                            }
                         </Grid.Column>
                         <Grid.Column>
-                            <Header as='h2'>
-                                Try different variation
-                            </Header>
-                            {item.variations && item.variations.map(variation => {
-                                return (
-                                    <React.Fragment key={variation.id}>
-
-                                        <Header as='h3'>
-                                            {variation.name}
+                            {item.label && <Label as='a' color={this.renderLabelColor(item.label)} size='huge' ribbon='right'>
+                                {item.label}
+                            </Label>}
+                            <Header size='huge' fluid textAlign="center">{item.title}</Header>
+                            <Header size='medium' fluid textAlign="center">{item.category} - {item.origin}</Header>
+                            <Header size='Large' fluid textAlign="center">{item.description}</Header>
+                            <Divider />
+                            <Form style={{ marginTop: "8em" }} >
+                                {item.variations && item.variations.map(variation => {
+                                    const name = variation.name.toLowerCase()
+                                    return <Form.Field key={variation.id} style={{ textAlign: 'center' }}>
+                                        <Header as='h3' >
+                                            * {variation.name}:
                                         </Header>
-                                        <Item.Group divided >
+                                        <Menu secondary >
                                             {variation.item_variations.map(item_variation => {
                                                 return (
-                                                    <Item key={item_variation.id}>
-                                                        {item_variation.attachment && <Item.Image size='tiny' src={`http://127.0.0.1:8000${item_variation.attachment}`} />}
-                                                        <Item.Content verticalAlign='middle'>{item_variation.value}</Item.Content>
-                                                    </Item>
+                                                    <Menu.Item
+                                                        key={item_variation.id}
+                                                        name={name}
+                                                        content={item_variation.id}
+                                                        active={item_variation.id === formData[name]}
+                                                        onClick={this.handleClick}
+                                                    >
+                                                        {item_variation.value}
+                                                    </Menu.Item>
                                                 )
                                             })}
-                                        </Item.Group>
-                                    </React.Fragment>
-                                )
-                            })}
+                                        </Menu>
+                                    </Form.Field>
+                                })}
+
+                                <Form.Button floated='right' color="olive" icon labelPosition="right" onClick={() => this.handleAddToCart(item.slug)}>
+                                    Add to Cart <Icon name='cart plus' />
+                                </Form.Button>
+                            </Form>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
 
 
+
+                <Comment.Group style={{ marginTop: '5em' }}>
+                    <Divider />
+
+                    <Comment>
+                        <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/stevie.jpg' />
+                        <Comment.Content>
+                            <Comment.Author>Stevie Feliciano</Comment.Author>
+                            <Comment.Metadata>
+                                <div>2 days ago</div>
+                                <div>
+                                    <Icon name='star' />5 Faves
+          </div>
+                            </Comment.Metadata>
+                            <Comment.Text>
+                                Hey guys, I hope this example comment is helping you read this
+                                documentation.
+        </Comment.Text>
+                        </Comment.Content>
+                    </Comment>
+                </Comment.Group>
             </Container >
         )
     }
