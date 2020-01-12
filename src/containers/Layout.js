@@ -12,7 +12,7 @@ import {
 } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { logout } from "../store/actions/auth";
+import { logout, authCheckState } from "../store/actions/auth";
 import { fetchCart } from "../store/actions/cart";
 
 
@@ -26,8 +26,10 @@ class CustomLayout extends React.Component {
   showFixedMenu = () => this.setState({ fixed: true })
 
   componentDidMount() {
-    this.props.fetchCart();
+    this.props.authCheckState()
+    this.props.fetchCart()
   }
+
 
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name })
@@ -180,7 +182,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     logout: () => dispatch(logout()),
-    fetchCart: () => dispatch(fetchCart())
+    fetchCart: () => dispatch(fetchCart()),
+    authCheckState: () => dispatch(authCheckState())
   };
 };
 
