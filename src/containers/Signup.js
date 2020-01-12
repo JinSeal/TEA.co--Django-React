@@ -38,11 +38,11 @@ class RegistrationForm extends React.Component {
     return (
       <Grid
         textAlign="center"
-        style={{ height: "100vh" }}
+        style={{ height: "75vh" }}
         verticalAlign="middle"
       >
         <Grid.Column style={{ maxWidth: 450 }}>
-          <Header as="h2" color="teal" textAlign="center">
+          <Header as="h2" color="black" textAlign="center">
             Signup to your account
           </Header>
           {error && <p>{this.props.error.message}</p>}
@@ -90,7 +90,7 @@ class RegistrationForm extends React.Component {
                 />
 
                 <Button
-                  color="teal"
+                  color="olive"
                   fluid
                   size="large"
                   loading={loading}
@@ -101,7 +101,7 @@ class RegistrationForm extends React.Component {
               </Segment>
             </Form>
             <Message>
-              Already have an account? <NavLink to="/login">Login</NavLink>
+              Already have an account? <NavLink style={{ color: 'olive' }} to="/login">Login</NavLink>
             </Message>
           </React.Fragment>
         </Grid.Column>
