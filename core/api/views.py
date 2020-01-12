@@ -4,16 +4,18 @@ from django.shortcuts import render, get_object_or_404
 from django.http import Http404
 from django.utils import timezone
 from django_countries import countries
+from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from rest_framework import filters
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from .serializers import ItemSerializer, OrderSerializer, ItemDetailSerializer, AddressSerializer, PaymentSerializer
 from core.models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, Variation, ItemVariation
-
+from core import models
 import stripe
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -30,21 +32,42 @@ class StandardResultsSetPagination(PageNumberPagination):
     max_page_size = 90
 
 
+class FilterListView(APIView):
+    permission_classes = (AllowAny, )
+
+    def get(self, request, *args, **kwargs):
+        category = models.CATEGORY_CHOICES
+        origin = models.ORIGIN_CHOICES
+        label = models.LABEL_CHOICES
+        return Response({"Category": category, "Origin": origin, "Label": label}, status=HTTP_200_OK)
+
+
 class ItemListView(ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
     queryset = Item.objects.all()
     pagination_class = StandardResultsSetPagination
-    # page_number = request.GET.get('page')
-    # page_obj = paginator.get_page(page_number)
-    # return render(request, 'list.html', {'page_obj': page_obj})
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    search_fields = ['title']
+    filterset_fields = ['category', 'origin', 'label']
 
-    # def get(self, request, *args, **kwargs):
-    #     print(request)
-    #     item_list = Item.objects.all()
-    #     paginator = Paginator(item_list, 9)
-    #     page_number = request.data.get('page')
-    #     return Response(paginator.get_page(page_number), HTTP_200_OK)
+    def get_queryset(self):
+        queryset = self.queryset
+
+        category = self.request.query_params.get('category', None).strip()
+        if len(category):
+            queryset = queryset.filter(category=category)
+
+        origin = self.request.query_params.get('origin', None).strip()
+        if len(origin):
+            queryset = queryset.filter(origin=origin)
+
+        label = self.request.query_params.get('label', None).strip()
+        if len(label):
+            queryset = queryset.filter(label=label)
+
+        print(queryset)
+        return queryset
 
 
 class ItemDetailView(RetrieveAPIView):

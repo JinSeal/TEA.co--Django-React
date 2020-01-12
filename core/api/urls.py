@@ -14,7 +14,8 @@ from .views import (
     AddressUpdateView,
     AddressDeleteView,
     CountryListView,
-    UserIDView
+    UserIDView,
+    FilterListView
 )
 
 urlpatterns = [
@@ -34,5 +35,6 @@ urlpatterns = [
     path('address/<pk>/delete/', AddressDeleteView.as_view(), name='address-delete'),
     path('country-list/', CountryListView.as_view(), name='country-list'),
     path('payment-list/', PaymentListView.as_view(), name='payment-list'),
-    path('user-id/', UserIDView.as_view(), name='user-id')
+    path('user-id/', UserIDView.as_view(), name='user-id'),
+    path('filter-list/', FilterListView.as_view(), name='filter-list')
 ]

@@ -43,7 +43,7 @@ const HomepageLayout = () => (
                 />
                 <Button size='huge' color="olive">
                     <Link to="/products" style={{ color: 'white' }}>Discover More</Link>
-                    <Icon name='right arrow' color='white' />
+                    <Icon name='right arrow' style={{ color: 'white' }} />
                 </Button>
             </Container>
         </Segment>

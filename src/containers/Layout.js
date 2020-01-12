@@ -29,7 +29,9 @@ class CustomLayout extends React.Component {
     this.props.fetchCart();
   }
 
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+  handleItemClick = (e, { name }) => {
+    this.setState({ activeItem: name })
+  }
 
 
   render() {
@@ -60,19 +62,24 @@ class CustomLayout extends React.Component {
                   Tea.co
                 </Menu.Item>
                 <Menu.Item
-                  as='a'
+                  as={Link}
+                  to="/"
                   name='home'
-                  // active={activeItem === 'home' || activeItem === ''}
-                  onClick={this.handleItemClick} >
-                  <Link to="/" style={{ color: fixed ? "olive" : null }}>Home</Link>
+                  active={activeItem === 'home'}
+                  onClick={this.handleItemClick}
+                  style={{ color: fixed ? "olive" : null }}
+                >
+                  Home
                 </Menu.Item>
                 <Menu.Item
-                  as='a'
+                  as={Link}
+                  to="/products"
                   name='products'
                   active={activeItem === 'products'}
                   onClick={this.handleItemClick}
+                  style={{ color: fixed ? "olive" : null }}
                 >
-                  <Link to="/products" style={{ color: fixed ? "olive" : null }}>Tea</Link>
+                  Tea
                 </Menu.Item>
 
 
@@ -108,16 +115,10 @@ class CustomLayout extends React.Component {
                   :
                   <React.Fragment>
                     <Menu.Item position='right'>
-                      <Link to="/login">
-                        <Button as='a' inverted={!fixed} >
-                          Log in
+                      <Button as={Link} to='/login' inverted={!fixed} > Log in</Button>
+                      <Button as={Link} to='/signup' inverted={!fixed} color={fixed ? "olive" : null} style={{ marginLeft: '0.5em' }}>
+                        Sign Up
                   </Button>
-                      </Link>
-                      <Link to="/signup">
-                        <Button as='a' inverted={!fixed} color={fixed ? "olive" : null} style={{ marginLeft: '0.5em' }}>
-                          Sign Up
-                  </Button>
-                      </Link>
                     </Menu.Item>
                   </React.Fragment>
                 }

@@ -10,6 +10,10 @@ def make_refund_accepted(modeladmin, request, queryset):
 make_refund_accepted.short_description = 'Update orders to refund granted'
 
 
+class ItemAdmin(admin.ModelAdmin):
+    list_display = ['price', 'category', 'origin', 'label']
+
+
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['user',
                     'ordered',
@@ -73,7 +77,7 @@ class VariationAdmin(admin.ModelAdmin):
     inlines = [ItemVariationInLineAdmin]
 
 
-admin.site.register(Item)
+admin.site.register(Item, ItemAdmin)
 admin.site.register(OrderItem)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Payment)
