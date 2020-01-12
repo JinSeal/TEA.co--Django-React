@@ -1,33 +1,29 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Accordion, Breadcrumb, Card, Container, Dimmer, Form, Grid, Header, Image, Label, Loader, Menu, Message, Pagination, Segment, Select, Dropdown } from 'semantic-ui-react'
+import _ from 'lodash'
+import { Accordion, Card, Container, Dimmer, Divider, Form, Grid, Header, Image, Label, Loader, Menu, Message, Pagination, Search, Segment, Select, Dropdown } from 'semantic-ui-react'
 import axios from 'axios'
-import { productListURL, addToCartURL } from '../constants'
+import { productListURL, addToCartURL, filterListURL } from '../constants'
 import { authAxios } from '../utils'
 import { fetchCart } from '../store/actions/cart'
 
 
-const ColorForm = (
-    <Form>
-        <Form.Group grouped>
-            <Form.Checkbox label='Red' name='color' value='red' />
-            <Form.Checkbox label='Orange' name='color' value='orange' />
-            <Form.Checkbox label='Green' name='color' value='green' />
-            <Form.Checkbox label='Blue' name='color' value='blue' />
-        </Form.Group>
-    </Form>
-)
 
-const SizeForm = (
-    <Form>
-        <Form.Group grouped>
-            <Form.Radio label='Small' name='size' type='radio' value='small' />
-            <Form.Radio label='Medium' name='size' type='radio' value='medium' />
-            <Form.Radio label='Large' name='size' type='radio' value='large' />
-            <Form.Radio label='X-Large' name='size' type='radio' value='x-large' />
-        </Form.Group>
-    </Form>
-)
+const FilterForm = (key, filter, checked, func) => {
+    return (
+        <React.Fragment>
+            <Form.Group grouped>
+                <Form.Radio label={"All"} name={key} type='radio' value={""} onChange={func} checked={checked === ""} />
+                {filter.map(value => {
+                    return (
+                        <Form.Radio key={value[1]} label={value[1]} name={key} type='radio' value={value[0]} onChange={func} checked={checked === value[0]} />
+                    )
+                })}
+            </Form.Group>
+        </React.Fragment>
+    )
+}
+
 
 class ProductList extends Component {
     state = {
@@ -37,17 +33,23 @@ class ProductList extends Component {
         activeIndex: 0,
         activePage: 1,
         pageSize: 9,
+        searchValue: "",
+        filter: null,
+        Category: "",
+        Origin: "",
+        Label: "",
+        activeFilter: { "Category": true, "Origin": true, "Label": true }
     };
-
 
     componentDidMount() {
         this.handleFetchProducts()
+        this.handleFetchFilterList()
     }
 
     handleFetchProducts = () => {
-        const { activePage, pageSize } = this.state
+        const { activePage, pageSize, searchValue } = this.state
         this.setState({ loading: true, error: null })
-        axios.get(productListURL(activePage, pageSize))
+        axios.get(productListURL(activePage, pageSize, searchValue))
             .then(res => {
                 this.setState({ data: res.data, loading: false });
             })
@@ -56,13 +58,27 @@ class ProductList extends Component {
             })
     }
 
+    handleFetchFilterList = () => {
+        this.setState({ loading: true, error: null })
+        axios.get(filterListURL)
+            .then(res => {
+                this.setState({ filter: res.data, loading: false });
+            })
+            .catch(err => {
+                this.setState({ error: err })
+            })
+    }
 
     handleClick = (e, titleProps) => {
-        const { index } = titleProps
-        const { activeIndex } = this.state
-        const newIndex = activeIndex === index ? -1 : index
-
-        this.setState({ activeIndex: newIndex })
+        const { content } = titleProps
+        const { activeFilter } = this.state
+        const updatedData = {
+            ...activeFilter,
+            [content]: !activeFilter[content]
+        }
+        this.setState({
+            activeFilter: updatedData
+        })
     }
 
     handlePaginationChange = (e, { activePage }) => {
@@ -72,6 +88,36 @@ class ProductList extends Component {
 
     handleChange = (e, { value }) =>
         this.setState({ pageSize: value }, () => this.handleFetchProducts())
+
+    handleFilterChange = (e, { name, value }) => {
+        this.setState({ [name]: value })
+    }
+
+    handleFilterSubmit = () => {
+        this.setState({ error: null })
+        const { activePage, pageSize, searchValue, Category, Origin, Label } = this.state
+        axios.get(productListURL(activePage, pageSize, searchValue, Category, Origin, Label))
+            .then(res => {
+                this.setState({ data: res.data });
+            })
+            .catch(err => {
+                this.setState({ error: err })
+            })
+    }
+
+    handleSearchChange = (e, { value }) => {
+        this.setState({ searchValue: value }, () => {
+            const { activePage, pageSize, searchValue } = this.state
+            this.setState({ error: null })
+            axios.get(productListURL(activePage, pageSize, searchValue))
+                .then(res => {
+                    this.setState({ data: res.data });
+                })
+                .catch(err => {
+                    this.setState({ error: err })
+                })
+        })
+    }
 
     handleAddToCart = slug => {
         this.setState({ loading: true });
@@ -87,38 +133,45 @@ class ProductList extends Component {
 
 
     render() {
-        const { data, error, loading, activeIndex, activePage, pageSize } = this.state
-        const sections = [
-            { key: 'Home', content: 'Home', link: true },
-            { key: 'Store', content: 'Store', link: true },
-            { key: 'Shirt', content: 'T-Shirt', active: true },
-        ]
+        const { data, error, loading, activePage, pageSize, searchValue, filter, activeFilter } = this.state
+
         return (
             <Container style={{ margin: "4em 0" }}>
                 <Grid>
 
                     <Grid.Row>
                         <Grid.Column width={4}>
-                            <Accordion as={Menu} vertical>
-                                <Menu.Item>
-                                    <Accordion.Title
-                                        active={activeIndex === 0}
-                                        content='Size'
-                                        index={0}
-                                        onClick={this.handleClick}
-                                    />
-                                    <Accordion.Content active={activeIndex === 0} content={SizeForm} />
-                                </Menu.Item>
-                                <Menu.Item>
-                                    <Accordion.Title
-                                        active={activeIndex === 1}
-                                        content='Colors'
-                                        index={1}
-                                        onClick={this.handleClick}
-                                    />
-                                    <Accordion.Content active={activeIndex === 1} content={ColorForm} />
-                                </Menu.Item>
-                            </Accordion>
+                            <Search
+                                fluid
+                                showNoResults={false}
+                                loading={loading}
+                                onSearchChange={_.debounce(this.handleSearchChange, 500, {
+                                    leading: true,
+                                })}
+                                placeholder="Search by tea"
+                                value={searchValue}
+                                style={{ marginBottom: "2.2em" }}
+                            />
+                            <Form onSubmit={this.handleFilterSubmit}>
+                                <Accordion as={Menu} vertical>
+                                    {filter && Object.keys(filter).map((key, i) => {
+                                        return (
+                                            <Menu.Item key={i}>
+                                                <Accordion.Title as="h3"
+                                                    active={activeFilter[key]}
+                                                    content={key}
+                                                    index={i}
+                                                    onClick={this.handleClick}
+                                                />
+                                                <Accordion.Content active={activeFilter[key]} content={FilterForm(key, filter[key], this.state[key], this.handleFilterChange)} />
+                                            </Menu.Item>
+                                        )
+                                    })}
+                                </Accordion>
+                                <Form.Button color="olive" fluid style={{ marginTop: "2em" }}>Filter</Form.Button>
+                            </Form>
+
+
                         </Grid.Column>
                         <Grid.Column width={12}>
                             <Grid.Row>
@@ -157,7 +210,6 @@ class ProductList extends Component {
                                     </span>
                                     <Pagination
                                         boundaryRange={1}
-                                        defaultActivePage={1}
                                         siblingRange={1}
                                         totalPages={~~(data.count / pageSize) + 1}
                                         activePage={activePage}
@@ -188,7 +240,6 @@ class ProductList extends Component {
                             <Grid.Row style={{ margin: "2em 0", textAlign: "center" }}>
                                 {data && <Pagination
                                     boundaryRange={1}
-                                    defaultActivePage={1}
                                     siblingRange={1}
                                     totalPages={~~(data.count / pageSize) + 1}
                                     activePage={activePage}
@@ -197,7 +248,6 @@ class ProductList extends Component {
                             </Grid.Row>
                         </Grid.Column>
                     </Grid.Row>
-
                 </Grid>
             </Container >
         )
