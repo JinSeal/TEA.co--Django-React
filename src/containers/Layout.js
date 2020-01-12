@@ -88,13 +88,15 @@ class CustomLayout extends React.Component {
                 {authenticated ?
                   <React.Fragment>
                     <Menu.Item
-                      as='a'
+                      as={Link}
+                      to="/profile"
                       position='right'
                       name='profile'
                       active={activeItem === 'profile'}
                       onClick={this.handleItemClick}
+                      style={{ color: fixed ? "olive" : null }}
                     >
-                      <Link to="/profile" style={{ color: fixed ? "olive" : null }}>Profile</Link>
+                      Profile
                     </Menu.Item>
                     <Dropdown as='a' loading={loading} text={`${cart !== null ? cart.order_items.length : 0} items`} pointing className='link item' icon='cart'>
                       <Dropdown.Menu>
@@ -128,9 +130,7 @@ class CustomLayout extends React.Component {
             </Menu >
           </Segment>
         </Visibility >
-
         {this.props.children}
-
         < Segment inverted vertical style={{ padding: '5em 0em' }
         }>
           <Container>

@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Button, Card, Comment, Container, Dimmer, Divider, Form, Grid, Header, Icon, Image, Item, Label, Loader, Menu, Message, Segment, Select } from 'semantic-ui-react'
+import { Button, Card, Comment, Container, Dimmer, Divider, Form, Grid, Header, Icon, Image, Item, Label, Loader, Menu, Message, Segment, Select, GridColumn } from 'semantic-ui-react'
 import axios from 'axios'
-import { productDetailURL, addToCartURL } from '../constants'
+import { productDetailURL, productListURL, addToCartURL } from '../constants'
 import { authAxios } from '../utils'
 import { fetchCart } from '../store/actions/cart'
 
@@ -13,23 +13,32 @@ class ProductDetail extends Component {
         error: null,
         data: [],
         formData: {},
+        ads: null
     };
 
     componentDidMount() {
-        this.handleFetchItem()
+        const { match: { params } } = this.props
+        this.handleFetchItem(params.productID)
     }
 
-    handleFetchItem = () => {
-        const { match: { params } } = this.props
+    handleFetchItem = itemID => {
         this.setState({ loading: true })
-        axios.get(productDetailURL(params.productID))
+        axios.get(productDetailURL(itemID))
             .then(res => {
                 this.setState({ data: res.data, loading: false });
+                axios.get(productListURL(1, 5, "", res.data.category.slice(0, 1)))
+                    .then(res => {
+                        this.setState({ ads: res.data, loading: false });
+                    })
+                    .catch(err => {
+                        this.setState({ error: err })
+                    })
             })
             .catch(err => {
                 this.setState({ error: err })
             })
     }
+
 
 
     handleFormatData = formData => {
@@ -38,11 +47,11 @@ class ProductDetail extends Component {
         })
     }
 
-    handleClick = (e, { name, content }) => {
+    handleClick = (name, id) => {
         const { formData } = this.state
         const updatedFormData = {
             ...formData,
-            [name]: content
+            [name]: id
         }
         this.setState({ formData: updatedFormData })
     }
@@ -76,7 +85,7 @@ class ProductDetail extends Component {
     }
 
     render() {
-        const { data, error, formData, loading } = this.state
+        const { data, error, formData, loading, ads } = this.state
         const item = data
         return (
             <Container style={{ margin: '5em 0' }}>
@@ -108,9 +117,9 @@ class ProductDetail extends Component {
                             {item.label && <Label as='a' color={this.renderLabelColor(item.label)} size='huge' ribbon='right'>
                                 {item.label}
                             </Label>}
-                            <Header size='huge' fluid textAlign="center">{item.title}</Header>
-                            <Header size='medium' fluid textAlign="center">{item.category} - {item.origin}</Header>
-                            <Header size='Large' fluid textAlign="center">{item.description}</Header>
+                            <Header size='huge' textAlign="center">{item.title}</Header>
+                            <Header size='medium' textAlign="center">{item.category} - {item.origin}</Header>
+                            <Header size='large' textAlign="center">{item.description}</Header>
                             <Divider />
                             <Form style={{ marginTop: "8em" }} >
                                 {item.variations && item.variations.map(variation => {
@@ -125,9 +134,8 @@ class ProductDetail extends Component {
                                                     <Menu.Item
                                                         key={item_variation.id}
                                                         name={name}
-                                                        content={item_variation.id}
                                                         active={item_variation.id === formData[name]}
-                                                        onClick={this.handleClick}
+                                                        onClick={() => this.handleClick(name, item_variation.id)}
                                                     >
                                                         {item_variation.value}
                                                     </Menu.Item>
@@ -145,11 +153,30 @@ class ProductDetail extends Component {
                     </Grid.Row>
                 </Grid>
 
-
+                <Segment style={{ padding: '8em 0em' }} vertical>
+                    <Header size='large' style={{ marginBottom: '2em' }}>People also viewed: </Header>
+                    <Grid container relaxed columns={4} style={{ display: 'flex', overflowX: 'auto', flexWrap: 'nowrap' }}>
+                        <Grid.Row>
+                            {ads && ads.results.map(item => {
+                                if (item.id === data.id) return
+                                return (
+                                    <Grid.Column key={item.id}>
+                                        <Card as={Link} to={`/products/${item.id}/`} onClick={() => {
+                                            this.handleFetchItem(item.id)
+                                        }}>
+                                            <Image size="medium" src={item.image} wrapped ui={false} />
+                                            <Card.Content>
+                                                <Card.Header >{item.title}</Card.Header>
+                                            </Card.Content>
+                                        </Card>
+                                    </Grid.Column>
+                                )
+                            })}
+                        </Grid.Row>
+                    </Grid>
+                </Segment>
 
                 <Comment.Group style={{ marginTop: '5em' }}>
-                    <Divider />
-
                     <Comment>
                         <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/stevie.jpg' />
                         <Comment.Content>
