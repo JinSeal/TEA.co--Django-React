@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import { Accordion, Card, Container, Dimmer, Divider, Form, Grid, Header, Image, Label, Loader, Menu, Message, Pagination, Search, Segment, Select, Dropdown } from 'semantic-ui-react'
+import { Accordion, Breadcrumb, Card, Container, Dimmer, Divider, Form, Grid, Header, Image, Label, Loader, Menu, Message, Pagination, Search, Segment, Select, Dropdown } from 'semantic-ui-react'
 import axios from 'axios'
 import { productListURL, addToCartURL, filterListURL } from '../constants'
 import { authAxios } from '../utils'
@@ -38,7 +38,11 @@ class ProductList extends Component {
         Category: "",
         Origin: "",
         Label: "",
-        activeFilter: { "Category": true, "Origin": true, "Label": true }
+        activeFilter: { "Category": true, "Origin": true, "Label": true },
+        breadcrumb: [
+            { key: 'Home', content: 'Home' },
+            { key: 'Tea', content: 'Tea' }
+        ]
     };
 
     componentDidMount() {
@@ -98,11 +102,22 @@ class ProductList extends Component {
         const { activePage, pageSize, searchValue, Category, Origin, Label } = this.state
         axios.get(productListURL(activePage, pageSize, searchValue, Category, Origin, Label))
             .then(res => {
-                this.setState({ data: res.data });
+                this.setState({ data: res.data })
+                this.renderBreadcrumb()
             })
             .catch(err => {
                 this.setState({ error: err })
             })
+
+    }
+
+    handleClickReset = () => {
+        this.setState({
+            Category: "",
+            Origin: "",
+            Label: ""
+        })
+
     }
 
     handleSearchChange = (e, { value }) => {
@@ -131,9 +146,28 @@ class ProductList extends Component {
             })
     }
 
+    renderBreadcrumb = () => {
+        const { Category, Origin, Label, filter, breadcrumb } = this.state
+
+        let list = [
+            { key: 'Home', content: 'Home' },
+            { key: 'Tea', content: 'Tea' }
+        ]
+        const getValue = (value, category) => {
+            const content = filter[value].filter(pair => {
+                return pair[0] === category
+            })[0]
+            return content[1]
+        }
+        Label !== '' && list.push({ key: getValue("Label", Label), content: getValue("Label", Label) })
+        Origin !== '' && list.push({ key: getValue("Origin", Origin), content: getValue("Origin", Origin) })
+        Category !== '' && list.push({ key: getValue("Category", Category), content: getValue("Category", Category) })
+
+        this.setState({ breadcrumb: list })
+    }
 
     render() {
-        const { data, error, loading, activePage, pageSize, searchValue, filter, activeFilter } = this.state
+        const { data, error, loading, activePage, pageSize, searchValue, filter, activeFilter, breadcrumb } = this.state
 
         return (
             <Container style={{ margin: "4em 0" }}>
@@ -141,19 +175,25 @@ class ProductList extends Component {
 
                     <Grid.Row>
                         <Grid.Column width={4}>
-                            <Search
-                                fluid
-                                showNoResults={false}
-                                loading={loading}
-                                onSearchChange={_.debounce(this.handleSearchChange, 500, {
-                                    leading: true,
-                                })}
-                                placeholder="Search by tea"
-                                value={searchValue}
-                                style={{ marginBottom: "2.2em" }}
-                            />
+
                             <Form onSubmit={this.handleFilterSubmit}>
                                 <Accordion as={Menu} vertical>
+                                    <Menu.Item>
+                                        <Search
+                                            fluid
+                                            showNoResults={false}
+                                            loading={loading}
+                                            onSearchChange={_.debounce(this.handleSearchChange, 500, {
+                                                leading: true,
+                                            })}
+                                            placeholder="Search by tea"
+                                            value={searchValue}
+                                        />
+                                    </Menu.Item>
+                                    <Menu.Item style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <Form.Button color="olive" >Filter</Form.Button>
+                                        <Form.Button color="olive" onClick={this.handleClickReset}>Reset</Form.Button>
+                                    </Menu.Item>
                                     {filter && Object.keys(filter).map((key, i) => {
                                         return (
                                             <Menu.Item key={i}>
@@ -168,12 +208,13 @@ class ProductList extends Component {
                                         )
                                     })}
                                 </Accordion>
-                                <Form.Button color="olive" fluid style={{ marginTop: "2em" }}>Filter</Form.Button>
+
                             </Form>
-
-
                         </Grid.Column>
                         <Grid.Column width={12}>
+                            <Grid.Row>
+                                {filter && <Breadcrumb size="huge" icon='right angle' sections={breadcrumb} style={{ marginBottom: "2em" }} />}
+                            </Grid.Row>
                             <Grid.Row>
                                 {loading && (
                                     <Segment>
@@ -221,10 +262,10 @@ class ProductList extends Component {
                                 <Card.Group itemsPerRow={3}>
                                     {data && data.results.map(item => {
                                         return (
-                                            <Card key={item.id} >
+                                            <Card key={item.id} as='a' onClick={() => this.props.history.push(`/products/${item.id}/`)}>
                                                 <Image src={item.image} wrapped />
                                                 <Card.Content>
-                                                    <Card.Header as='a' onClick={() => this.props.history.push(`/products/${item.id}/`)}>{item.title}</Card.Header>
+                                                    <Card.Header >{item.title}</Card.Header>
                                                     <Card.Meta>
                                                         <span className='date'>$ {item.price}.00</span>
                                                     </Card.Meta>
