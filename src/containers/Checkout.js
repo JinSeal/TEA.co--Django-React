@@ -3,7 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { CardElement, injectStripe, Elements, StripeProvider } from 'react-stripe-elements';
 import { Container, Button, Message, Item, Header, Divider, Loader, Segment, Dimmer, Image, Label, Form, Select } from 'semantic-ui-react'
 import { authAxios } from '../utils';
-import { handlePaymentURL, orderSummaryURL, addCouponURL, addressListURL } from "../constants";
+import { handlePaymentURL, orderSummaryURL, addCouponURL, addressListURL, endpoint } from "../constants";
 
 const OrderPreview = (props) => {
     const { data } = props
@@ -23,7 +23,7 @@ const OrderPreview = (props) => {
                     {data.order_items.map((order_item, i) => {
                         return (
                             <Item key={i}>
-                                <Item.Image size='tiny' src={`http://127.0.0.1:8000${order_item.item.image}`} />
+                                <Item.Image size='tiny' src={`${endpoint}/${order_item.item.image}`} />
 
                                 <Item.Content verticalAlign='middle'>
                                     <Item.Header as='a'>{order_item.quantity} x {order_item.item.title} {renderVariations(order_item)}</Item.Header>
