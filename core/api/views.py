@@ -54,15 +54,15 @@ class ItemListView(ListAPIView):
     def get_queryset(self):
         queryset = self.queryset
 
-        category = self.request.query_params.get('category', None).strip()
+        category = self.request.query_params.get('category', '').strip()
         if len(category):
             queryset = queryset.filter(category=category)
 
-        origin = self.request.query_params.get('origin', None).strip()
+        origin = self.request.query_params.get('origin', '').strip()
         if len(origin):
             queryset = queryset.filter(origin=origin)
 
-        label = self.request.query_params.get('label', None).strip()
+        label = self.request.query_params.get('label', '').strip()
         if len(label):
             queryset = queryset.filter(label=label)
 

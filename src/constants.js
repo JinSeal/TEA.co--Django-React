@@ -1,10 +1,10 @@
 export const localhost = 'http://127.0.0.1:8000'
 
-export const production = 'https://tea-ware.heroku.com'
+export const production = 'https://tea-ware.herokuapp.com'
 
 const apiURL = '/api'
 
-export const endpoint = `${localhost}${apiURL}`
+export const endpoint = `${production}${apiURL}`
 
 export const productListURL = (page, size, searchValue, category = "", origin = "", label = "") => `${endpoint}/products/?page=${page}&page_size=${size}&search=${searchValue}&category=${category}&origin=${origin}&label=${label}`;
 export const productDetailURL = id => `${endpoint}/products/${id}/`;

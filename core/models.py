@@ -49,9 +49,9 @@ class Item(models.Model):
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
     category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=1)
-    origin = models.CharField(choices=ORIGIN_CHOICES, max_length=1, blank=True)
-    label = models.CharField(choices=LABEL_CHOICES, max_length=1, blank=True)
+        choices=CATEGORY_CHOICES, max_length=2)
+    origin = models.CharField(choices=ORIGIN_CHOICES, max_length=2, blank=True)
+    label = models.CharField(choices=LABEL_CHOICES, max_length=2, blank=True)
     slug = models.SlugField()
     description = models.TextField()
     image = models.ImageField()
@@ -180,7 +180,7 @@ class Address(models.Model):
     apartment_address = models.CharField(max_length=100)
     country = CountryField(multiple=False)
     zip = models.CharField(max_length=100)
-    address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
+    address_type = models.CharField(max_length=2, choices=ADDRESS_CHOICES)
     default = models.BooleanField(default=False)
 
     def __str__(self):
