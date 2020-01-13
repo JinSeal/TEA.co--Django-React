@@ -61,7 +61,7 @@ class CustomLayout extends React.Component {
             >
               <Container>
                 <Menu.Item as='h1'>
-                  Tea.co
+                  TEA.co
                 </Menu.Item>
                 <Menu.Item
                   as={Link}
@@ -83,7 +83,14 @@ class CustomLayout extends React.Component {
                 >
                   Tea
                 </Menu.Item>
-
+                <Menu.Item
+                  as="a"
+                  href="https://github.com/JinSeal/TEA.co--Django-React"
+                  target="_blank"
+                  style={{ color: fixed ? "olive" : null }}
+                >
+                  GitHub
+                </Menu.Item>
 
                 {authenticated ?
                   <React.Fragment>

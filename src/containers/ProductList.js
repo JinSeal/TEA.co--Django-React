@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import { Accordion, Breadcrumb, Card, Container, Dimmer, Divider, Form, Grid, Header, Image, Label, Loader, Menu, Message, Pagination, Search, Segment, Select, Dropdown } from 'semantic-ui-react'
+import { Accordion, Breadcrumb, Card, Container, Dimmer, Form, Grid, Image, Loader, Menu, Message, Pagination, Search, Segment, Dropdown } from 'semantic-ui-react'
 import axios from 'axios'
 import { productListURL, addToCartURL, filterListURL } from '../constants'
 import { authAxios } from '../utils'

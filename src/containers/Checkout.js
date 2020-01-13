@@ -7,6 +7,15 @@ import { handlePaymentURL, orderSummaryURL, addCouponURL, addressListURL } from 
 
 const OrderPreview = (props) => {
     const { data } = props
+
+    const renderVariations = orderItem => {
+        let text = ""
+        orderItem.item_variations.forEach(iv => {
+            text += `- ${iv.value} `
+        })
+        return text
+    }
+
     return (
         <React.Fragment>
             {data && <React.Fragment>
@@ -17,7 +26,7 @@ const OrderPreview = (props) => {
                                 <Item.Image size='tiny' src={`http://127.0.0.1:8000${order_item.item.image}`} />
 
                                 <Item.Content verticalAlign='middle'>
-                                    <Item.Header as='a'>{order_item.quantity} x {order_item.item.title}</Item.Header>
+                                    <Item.Header as='a'>{order_item.quantity} x {order_item.item.title} {renderVariations(order_item)}</Item.Header>
                                     <Item.Extra>
                                         <Label>${order_item.final_price}</Label>
                                     </Item.Extra>
@@ -186,7 +195,7 @@ class CheckoutForm extends Component {
     render() {
         const { data, loading, error, success, billingAddresses, shippingAddresses, selectedBillingAddress, selectedShippingAddress } = this.state
         return (
-            <div>
+            <Container >
                 {loading && (
                     <Segment>
                         <Dimmer active inverted>
@@ -203,8 +212,6 @@ class CheckoutForm extends Component {
                         content={JSON.stringify(error)}
                     />
                 )}
-
-
                 <OrderPreview data={data} />
                 <Divider />
                 <CouponForm handleAddCoupon={(e, code) => this.handleAddCoupon(e, code)} />
@@ -226,7 +233,6 @@ class CheckoutForm extends Component {
                     :
                     <Header><Link to="/profile">add billing addresses</Link></Header>
                 }
-
                 {shippingAddresses.length > 0 ?
                     <React.Fragment>
                         <Header>Select a shipping addresses</Header>
@@ -243,8 +249,7 @@ class CheckoutForm extends Component {
                     :
                     <Header><Link to="/profile">add shipping addresses</Link></Header>
                 }
-
-                {shippingAddresses.length < 1 || billingAddresses.length < 1 ?
+                {selectedShippingAddress.length < 1 || selectedBillingAddress.length < 1 ?
                     <React.Fragment>
                         <Divider />
                         <Message warning>
@@ -253,10 +258,10 @@ class CheckoutForm extends Component {
                         </Message>
                     </React.Fragment>
                     :
-                    <React.Fragment>
+                    <React.Fragment style={{ marginTop: "3em" }}>
                         <Divider />
                         <Header>Would you like to complete the purchase?</Header>
-                        <CardElement />
+                        <CardElement hidePostalCode={true} />
                         {success &&
                             <Message positive>
                                 <Message.Header>Your payment was successful.</Message.Header>
@@ -265,7 +270,7 @@ class CheckoutForm extends Component {
                         }
                         <Button loading={loading} disabled={loading} onClick={this.submit} style={{ marginTop: "10px" }}>Purchase</Button>
                     </React.Fragment>}
-            </div>
+            </Container>
         );
     }
 }
@@ -273,7 +278,7 @@ class CheckoutForm extends Component {
 const InjectedForm = withRouter(injectStripe(CheckoutForm));
 
 const WrappedForm = () => (
-    <Container text>
+    <Container text style={{ margin: '5em 0' }}>
         <StripeProvider apiKey="pk_test_KiZyYKiQtlmrqhtoGEbkdtuR00es4lCEgx">
             <div>
                 <h1>Complete your order</h1>

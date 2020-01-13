@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Button, Card, Dimmer, Divider, Form, Grid, Header, Image, Label, Loader, Menu, Message, Segment, Select, Table } from 'semantic-ui-react'
+import { Button, Card, Container, Dimmer, Divider, Form, Grid, Header, Image, Label, Loader, Menu, Message, Segment, Select, Table } from 'semantic-ui-react'
 import { authAxios } from "../utils";
 import { addressListURL, addressCreateURL, addressUpdateURL, addressDeleteURL, countryListURL, userIDURL, paymentListURL } from "../constants";
 
@@ -127,12 +127,12 @@ class AddressForm extends Component {
         const { countries } = this.props
         return (
             <Form onSubmit={this.handleSubmit} success={success} error={error}>
-                <Form.Input required name='street_address' value={formData.street_address} placeholder='Street_address' onChange={this.handleChange} />
-                <Form.Input required name='apartment_address' value={formData.apartment_address} placeholder='Apartment_address' onChange={this.handleChange} />
+                <Form.Input required name='apartment_address' value={formData.apartment_address} placeholder='Unit number' onChange={this.handleChange} />
+                <Form.Input required name='street_address' value={formData.street_address} placeholder='Street address' onChange={this.handleChange} />
                 <Form.Field required  >
-                    <Select loading={countries.length < 2} clearable search value={formData.country} options={countries} name='country' placeholder='country' onChange={this.handleSelectChange} />
+                    <Select loading={countries.length < 2} clearable search value={formData.country} options={countries} name='country' placeholder='Country' onChange={this.handleSelectChange} />
                 </Form.Field>
-                <Form.Input required name='zip' value={formData.zip} placeholder='Zip code' onChange={this.handleChange} />
+                <Form.Input required name='zip' value={formData.zip} placeholder='Post code' onChange={this.handleChange} />
                 <Form.Checkbox name='default' checked={formData.default} label='Make this the default address' onChange={this.handleToggleCheckbox} checked={formData.default} />
                 {success && <Message
                     success
@@ -362,59 +362,61 @@ class Profile extends Component {
             return <Redirect to="/login" />
         }
         return (
-            <Grid container columns={2} divided>
-                <Grid.Row>
-                    <Grid.Column columns={1}>
-                        {loading && (
-                            <Segment>
-                                <Dimmer active inverted>
-                                    <Loader inverted>Loading</Loader>
-                                </Dimmer>
+            <Container style={{ margin: '5em 0' }}>
+                <Grid container columns={2} divided>
+                    <Grid.Row>
+                        <Grid.Column columns={1}>
+                            {loading && (
+                                <Segment>
+                                    <Dimmer active inverted>
+                                        <Loader inverted>Loading</Loader>
+                                    </Dimmer>
 
-                                <Image src='/images/wireframe/short-paragraph.png' />
-                            </Segment>
-                        )}
-                        {error && (
-                            <Message
-                                error
-                                header='There was some errors.'
-                                content={JSON.stringify(error)}
-                            />
-                        )}
-                    </Grid.Column>
-                </Grid.Row>
-                <Grid.Row>
-                    <Grid.Column width={6}>
-                        <Menu pointing vertical fluid>
-                            <Menu.Item
-                                name='Billing Address'
-                                active={activeItem === 'Billing Address'}
-                                onClick={this.handleItemClick}
-                            />
-                            <Menu.Item
-                                name='Shipping Address'
-                                active={activeItem === 'Shipping Address'}
-                                onClick={this.handleItemClick}
-                            />
-                            <Menu.Item
-                                name='Payment History'
-                                active={activeItem === 'Payment History'}
-                                onClick={this.handleItemClick}
-                            />
-                        </Menu>
-                    </Grid.Column>
-                    <Grid.Column width={10}>
-                        <Header>{this.handleActiveItem()}</Header>
-                        <Divider />
-                        {activeItem === 'Payment History' ?
-                            <PaymentHistoryForm />
-                            :
-                            this.renderAddresses()
-                        }
+                                    <Image src='/images/wireframe/short-paragraph.png' />
+                                </Segment>
+                            )}
+                            {error && (
+                                <Message
+                                    error
+                                    header='There was some errors.'
+                                    content={JSON.stringify(error)}
+                                />
+                            )}
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column width={6}>
+                            <Menu pointing vertical fluid>
+                                <Menu.Item
+                                    name='Billing Address'
+                                    active={activeItem === 'Billing Address'}
+                                    onClick={this.handleItemClick}
+                                />
+                                <Menu.Item
+                                    name='Shipping Address'
+                                    active={activeItem === 'Shipping Address'}
+                                    onClick={this.handleItemClick}
+                                />
+                                <Menu.Item
+                                    name='Payment History'
+                                    active={activeItem === 'Payment History'}
+                                    onClick={this.handleItemClick}
+                                />
+                            </Menu>
+                        </Grid.Column>
+                        <Grid.Column width={10}>
+                            <Header>{this.handleActiveItem()}</Header>
+                            <Divider />
+                            {activeItem === 'Payment History' ?
+                                <PaymentHistoryForm />
+                                :
+                                this.renderAddresses()
+                            }
 
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </Container>
         )
     }
 }

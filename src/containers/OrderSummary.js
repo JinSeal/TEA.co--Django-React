@@ -89,7 +89,7 @@ class OrderSummary extends Component {
             return <Redirect to="/login" />
         }
         return (
-            <Container>
+            <Container style={{ margin: '5em 0' }}>
                 <Header as='h3'>Order Summary</Header>
                 {error && <Message negative>
                     <Message.Header>There was an error.</Message.Header>
