@@ -1,5 +1,6 @@
 import axios from "axios";
 import * as actionTypes from "./actionTypes";
+import { cartLogout, fetchCart } from "./cart";
 import { localhost, production } from "../../constants";
 
 export const authStart = () => {
@@ -38,11 +39,11 @@ export const checkAuthTimeout = expirationTime => {
   };
 };
 
-export const authLogin = (username, password) => {
+export const authLogin = (username, password, history) => {
   return dispatch => {
     dispatch(authStart());
     axios
-      .post(`${production}/rest-auth/login/`, {
+      .post(`${localhost}/rest-auth/login/`, {
         username: username,
         password: password
       })
@@ -55,7 +56,9 @@ export const authLogin = (username, password) => {
         dispatch(checkAuthTimeout(3600));
       })
       .catch(err => {
-        dispatch(authFail(err));
+        if (err.response) {
+          dispatch(authFail(err.response.data));
+        }
       });
   };
 };
@@ -64,7 +67,7 @@ export const authSignup = (username, email, password1, password2) => {
   return dispatch => {
     dispatch(authStart());
     axios
-      .post(`${production}/rest-auth/registration/`, {
+      .post(`${localhost}/rest-auth/registration/`, {
         username: username,
         email: email,
         password1: password1,
@@ -79,7 +82,9 @@ export const authSignup = (username, email, password1, password2) => {
         dispatch(checkAuthTimeout(3600));
       })
       .catch(err => {
-        dispatch(authFail(err));
+        if (err.response) {
+          dispatch(authFail(err.response.data));
+        }
       });
   };
 };

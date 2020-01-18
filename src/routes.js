@@ -1,6 +1,6 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import Hoc from "./hoc/hoc";
+import Hoc from "./hoc";
 
 import Login from "./containers/Login";
 import Signup from "./containers/Signup";
@@ -22,8 +22,6 @@ const BaseRouter = () => (
     <Route path="/order-summary" component={OrderSummary} />
     <Route path="/checkout" component={Checkout} />
     <Route path="/profile" component={Profile} />
-
-
   </Hoc>
 );
 

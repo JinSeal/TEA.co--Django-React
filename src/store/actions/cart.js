@@ -1,38 +1,49 @@
 import axios from "axios";
-import { authAxios } from "../../utils"
-import { CART_START, CART_SUCCESS, CART_FAIL } from "../actions/actionTypes";
-import { orderSummaryURL } from '../../constants'
+import { authAxios } from "../../utils";
+import {
+  CART_START,
+  CART_SUCCESS,
+  CART_FAIL,
+  CART_LOGOUT
+} from "../actions/actionTypes";
+import { orderSummaryURL } from "../../constants";
 
 export const cartStart = () => {
-    return {
-        type: CART_START
-    };
+  return {
+    type: CART_START
+  };
 };
 
 export const cartSuccess = data => {
-    return {
-        type: CART_SUCCESS,
-        data
-    };
+  return {
+    type: CART_SUCCESS,
+    data
+  };
 };
 
 export const cartFail = error => {
-    return {
-        type: CART_FAIL,
-        error: error
-    };
+  return {
+    type: CART_FAIL,
+    error: error
+  };
+};
+
+export const cartLogout = () => {
+  return {
+    type: CART_LOGOUT
+  };
 };
 
 export const fetchCart = () => {
-    return dispatch => {
-        dispatch(cartStart());
-        authAxios
-            .get(orderSummaryURL)
-            .then(res => {
-                dispatch(cartSuccess(res.data));
-            })
-            .catch(err => {
-                dispatch(cartFail(err));
-            });
-    };
+  return dispatch => {
+    dispatch(cartStart());
+    authAxios
+      .get(orderSummaryURL)
+      .then(res => {
+        dispatch(cartSuccess(res.data));
+      })
+      .catch(err => {
+        dispatch(cartFail(err));
+      });
+  };
 };

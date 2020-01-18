@@ -45,9 +45,15 @@ class RegistrationForm extends React.Component {
           <Header as="h2" color="black" textAlign="center">
             Signup to your account
           </Header>
-          {error && <p>{this.props.error.message}</p>}
-
           <React.Fragment>
+            {error &&
+              Object.keys(error).map(err => {
+                return (
+                  <p key={err} style={{ color: "red", textAlign: "left" }}>
+                    - {err}: {error[err]}{" "}
+                  </p>
+                );
+              })}
             <Form size="large" onSubmit={this.handleSubmit}>
               <Segment stacked>
                 <Form.Input
@@ -75,7 +81,7 @@ class RegistrationForm extends React.Component {
                   name="password1"
                   icon="lock"
                   iconPosition="left"
-                  placeholder="Password"
+                  placeholder="Contain at least 6 digits"
                   type="password"
                 />
                 <Form.Input
@@ -101,7 +107,10 @@ class RegistrationForm extends React.Component {
               </Segment>
             </Form>
             <Message>
-              Already have an account? <NavLink style={{ color: 'olive' }} to="/login">Login</NavLink>
+              Already have an account?{" "}
+              <NavLink style={{ color: "olive" }} to="/login">
+                Login
+              </NavLink>
             </Message>
           </React.Fragment>
         </Grid.Column>
@@ -125,7 +134,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RegistrationForm);
+export default connect(mapStateToProps, mapDispatchToProps)(RegistrationForm);

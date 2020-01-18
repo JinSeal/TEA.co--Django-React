@@ -43,7 +43,14 @@ class LoginForm extends React.Component {
           <Header as="h2" color="black" textAlign="center">
             Log-in to your account
           </Header>
-          {error && <p>{this.props.error.message}</p>}
+          {error &&
+            Object.keys(error).map(err => {
+              return (
+                <p key={err} style={{ color: "red", textAlign: "left" }}>
+                  - {err}: {error[err]}{" "}
+                </p>
+              );
+            })}
 
           <React.Fragment>
             <Form size="large" onSubmit={this.handleSubmit}>
@@ -80,7 +87,10 @@ class LoginForm extends React.Component {
               </Segment>
             </Form>
             <Message>
-              New to us? <NavLink style={{ color: "olive" }} to="/signup">Sign Up</NavLink>
+              New to us?{" "}
+              <NavLink style={{ color: "olive" }} to="/signup">
+                Sign Up
+              </NavLink>
             </Message>
           </React.Fragment>
         </Grid.Column>
@@ -103,7 +113,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LoginForm);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

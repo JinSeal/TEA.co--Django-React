@@ -125,7 +125,7 @@ class AddToCartView(APIView):
 
         minimum_variation_count = Variation.objects.filter(item=item).count()
         if len(variations) < minimum_variation_count:
-            return Response({"message": "Please specify the required variations"}, status=HTTP_400_BAS_REQUEST)
+            return Response({"message": "Please specify the required variations"}, status=HTTP_400_BAD_REQUEST)
 
         order_item_qs = OrderItem.objects.filter(
             item=item,
