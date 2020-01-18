@@ -6,3 +6,8 @@ before_install:
 
 script:
   - docker run -e CI=true jinseal/teaco pylint home core
+
+deploy:
+  provider: heroku
+  api_key: $HEROKU_KEY
+  app: tea-ware
