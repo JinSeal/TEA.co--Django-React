@@ -1,7 +1,7 @@
 # TEA.co
 
 This is an ecommerce website built with Django and React, styled with SemanticUI, and backed with a REST API and Stripe payments.
-The site is deployed via Heroku at: https://tea-ware.herokuapp.com.
+I used TravisCI to build Docker containers to run Eslint and Pylint before deploying it via Heroku at: https://tea-ware.herokuapp.com.
 
 I wrote the site to practice the Django/React stack.
 
