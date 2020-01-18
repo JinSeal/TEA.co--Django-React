@@ -16,147 +16,335 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Address',
+            name="Address",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('street_address', models.CharField(max_length=100)),
-                ('apartment_address', models.CharField(max_length=100)),
-                ('country', django_countries.fields.CountryField(max_length=2)),
-                ('zip', models.CharField(max_length=100)),
-                ('address_type', models.CharField(choices=[('B', 'Billing'), ('S', 'Shipping')], max_length=2)),
-                ('default', models.BooleanField(default=False)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("street_address", models.CharField(max_length=100)),
+                ("apartment_address", models.CharField(max_length=100)),
+                ("country", django_countries.fields.CountryField(max_length=2)),
+                ("zip", models.CharField(max_length=100)),
+                (
+                    "address_type",
+                    models.CharField(
+                        choices=[("B", "Billing"), ("S", "Shipping")], max_length=2
+                    ),
+                ),
+                ("default", models.BooleanField(default=False)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'verbose_name_plural': 'Addresses',
-            },
+            options={"verbose_name_plural": "Addresses",},
         ),
         migrations.CreateModel(
-            name='Coupon',
+            name="Coupon",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=15)),
-                ('amount', models.FloatField()),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Item',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100)),
-                ('price', models.FloatField()),
-                ('discount_price', models.FloatField(blank=True, null=True)),
-                ('category', models.CharField(choices=[('J', 'Jasmine tea'), ('G', 'Green tea'), ('B', 'Black tea'), ('O', 'Oolng tea'), ('H', 'Herbal tea'), ('P', 'Pu erh tea')], max_length=2)),
-                ('origin', models.CharField(blank=True, choices=[('C', 'China'), ('J', 'Japan'), ('I', 'India')], max_length=2)),
-                ('label', models.CharField(blank=True, choices=[('N', 'New'), ('C', 'Clearance'), ('P', 'Popular'), ('O', 'Out of Stock')], max_length=2)),
-                ('slug', models.SlugField()),
-                ('description', models.TextField()),
-                ('image', models.ImageField(upload_to='')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='ItemVariation',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.CharField(max_length=50)),
-                ('attachment', models.ImageField(blank=True, null=True, upload_to='')),
-                ('price', models.FloatField(blank=True, null=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Order',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('ref_code', models.CharField(blank=True, max_length=20, null=True)),
-                ('start_date', models.DateTimeField(auto_now_add=True)),
-                ('ordered_date', models.DateTimeField()),
-                ('ordered', models.BooleanField(default=False)),
-                ('being_delivered', models.BooleanField(default=False)),
-                ('received', models.BooleanField(default=False)),
-                ('refund_requested', models.BooleanField(default=False)),
-                ('refund_granted', models.BooleanField(default=False)),
-                ('billing_address', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='billing_address', to='core.Address')),
-                ('coupon', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='core.Coupon')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("code", models.CharField(max_length=15)),
+                ("amount", models.FloatField()),
             ],
         ),
         migrations.CreateModel(
-            name='Variation',
+            name="Item",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
-                ('item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Item')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100)),
+                ("price", models.FloatField()),
+                ("discount_price", models.FloatField(blank=True, null=True)),
+                (
+                    "category",
+                    models.CharField(
+                        choices=[
+                            ("J", "Jasmine tea"),
+                            ("G", "Green tea"),
+                            ("B", "Black tea"),
+                            ("O", "Oolng tea"),
+                            ("H", "Herbal tea"),
+                            ("P", "Pu erh tea"),
+                        ],
+                        max_length=2,
+                    ),
+                ),
+                (
+                    "origin",
+                    models.CharField(
+                        blank=True,
+                        choices=[("C", "China"), ("J", "Japan"), ("I", "India")],
+                        max_length=2,
+                    ),
+                ),
+                (
+                    "label",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("N", "New"),
+                            ("C", "Clearance"),
+                            ("P", "Popular"),
+                            ("O", "Out of Stock"),
+                        ],
+                        max_length=2,
+                    ),
+                ),
+                ("slug", models.SlugField()),
+                ("description", models.TextField()),
+                ("image", models.ImageField(upload_to="")),
             ],
-            options={
-                'unique_together': {('item', 'name')},
-            },
         ),
         migrations.CreateModel(
-            name='UserProfile',
+            name="ItemVariation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('stripe_customer_id', models.CharField(blank=True, max_length=50, null=True)),
-                ('one_click_purchasing', models.BooleanField(default=False)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("value", models.CharField(max_length=50)),
+                ("attachment", models.ImageField(blank=True, null=True, upload_to="")),
+                ("price", models.FloatField(blank=True, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Refund',
+            name="Order",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('reason', models.TextField()),
-                ('accepted', models.BooleanField(default=False)),
-                ('email', models.EmailField(max_length=254)),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Order')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("ref_code", models.CharField(blank=True, max_length=20, null=True)),
+                ("start_date", models.DateTimeField(auto_now_add=True)),
+                ("ordered_date", models.DateTimeField()),
+                ("ordered", models.BooleanField(default=False)),
+                ("being_delivered", models.BooleanField(default=False)),
+                ("received", models.BooleanField(default=False)),
+                ("refund_requested", models.BooleanField(default=False)),
+                ("refund_granted", models.BooleanField(default=False)),
+                (
+                    "billing_address",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="billing_address",
+                        to="core.Address",
+                    ),
+                ),
+                (
+                    "coupon",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="core.Coupon",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Payment',
+            name="Variation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('stripe_charge_id', models.CharField(max_length=50)),
-                ('amount', models.FloatField()),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
+                (
+                    "item",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="core.Item"
+                    ),
+                ),
+            ],
+            options={"unique_together": {("item", "name")},},
+        ),
+        migrations.CreateModel(
+            name="UserProfile",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "stripe_customer_id",
+                    models.CharField(blank=True, max_length=50, null=True),
+                ),
+                ("one_click_purchasing", models.BooleanField(default=False)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='OrderItem',
+            name="Refund",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('ordered', models.BooleanField(default=False)),
-                ('quantity', models.IntegerField(default=1)),
-                ('item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Item')),
-                ('item_variations', models.ManyToManyField(to='core.ItemVariation')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("reason", models.TextField()),
+                ("accepted", models.BooleanField(default=False)),
+                ("email", models.EmailField(max_length=254)),
+                (
+                    "order",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="core.Order"
+                    ),
+                ),
+            ],
+        ),
+        migrations.CreateModel(
+            name="Payment",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("stripe_charge_id", models.CharField(max_length=50)),
+                ("amount", models.FloatField()),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+            ],
+        ),
+        migrations.CreateModel(
+            name="OrderItem",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("ordered", models.BooleanField(default=False)),
+                ("quantity", models.IntegerField(default=1)),
+                (
+                    "item",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="core.Item"
+                    ),
+                ),
+                ("item_variations", models.ManyToManyField(to="core.ItemVariation")),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='order',
-            name='items',
-            field=models.ManyToManyField(to='core.OrderItem'),
+            model_name="order",
+            name="items",
+            field=models.ManyToManyField(to="core.OrderItem"),
         ),
         migrations.AddField(
-            model_name='order',
-            name='payment',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='core.Payment'),
+            model_name="order",
+            name="payment",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="core.Payment",
+            ),
         ),
         migrations.AddField(
-            model_name='order',
-            name='shipping_address',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='shipping_address', to='core.Address'),
+            model_name="order",
+            name="shipping_address",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="shipping_address",
+                to="core.Address",
+            ),
         ),
         migrations.AddField(
-            model_name='order',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="order",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='itemvariation',
-            name='variation',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Variation'),
+            model_name="itemvariation",
+            name="variation",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="core.Variation"
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='itemvariation',
-            unique_together={('variation', 'value')},
+            name="itemvariation", unique_together={("variation", "value")},
         ),
     ]

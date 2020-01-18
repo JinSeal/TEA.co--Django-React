@@ -1,4 +1,7 @@
 [MESSAGES CONTROL]
 disable=invalid-name,missing-docstring
 
+[FORMAT]
+max-line-length=120
+
 

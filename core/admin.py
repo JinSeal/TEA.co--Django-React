@@ -1,61 +1,70 @@
 from django.contrib import admin
 
-from .models import (Item, OrderItem, Order, Payment, Coupon,
-                     Address, UserProfile, Variation, ItemVariation)
+from .models import (
+    Item,
+    OrderItem,
+    Order,
+    Payment,
+    Coupon,
+    Address,
+    UserProfile,
+    Variation,
+    ItemVariation,
+)
 
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ['price', 'category', 'origin', 'label']
+    list_display = ["price", "category", "origin", "label"]
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['user',
-                    'ordered',
-                    'being_delivered',
-                    'received',
-                    'refund_requested',
-                    'refund_granted',
-                    'shipping_address',
-                    'billing_address',
-                    'payment',
-                    'coupon'
-                    ]
+    list_display = [
+        "user",
+        "ordered",
+        "being_delivered",
+        "received",
+        "refund_requested",
+        "refund_granted",
+        "shipping_address",
+        "billing_address",
+        "payment",
+        "coupon",
+    ]
     list_display_links = [
-        'user',
-        'shipping_address',
-        'billing_address',
-        'payment',
-        'coupon'
+        "user",
+        "shipping_address",
+        "billing_address",
+        "payment",
+        "coupon",
     ]
-    list_filter = ['ordered',
-                   'being_delivered',
-                   'received',
-                   'refund_requested',
-                   'refund_granted']
-    search_fields = [
-        'user__username',
-        'ref_code'
+    list_filter = [
+        "ordered",
+        "being_delivered",
+        "received",
+        "refund_requested",
+        "refund_granted",
     ]
+    search_fields = ["user__username", "ref_code"]
 
 
 class AddressAdmin(admin.ModelAdmin):
     list_display = [
-        'user',
-        'street_address',
-        'apartment_address',
-        'country',
-        'zip',
-        'address_type',
-        'default'
+        "user",
+        "street_address",
+        "apartment_address",
+        "country",
+        "zip",
+        "address_type",
+        "default",
     ]
-    list_filter = ['default', 'address_type', 'country']
-    search_fields = ['user', 'street_address', 'apartment_address', 'zip']
+    list_filter = ["default", "address_type", "country"]
+    search_fields = ["user", "street_address", "apartment_address", "zip"]
 
 
 class ItemVariationAdmin(admin.ModelAdmin):
-    list_display = ['variation', 'value', 'attachment', 'price']
-    list_filter = ['variation', 'variation__item']
-    search_fields = ['value']
+    list_display = ["variation", "value", "attachment", "price"]
+    list_filter = ["variation", "variation__item"]
+    search_fields = ["value"]
 
 
 class ItemVariationInLineAdmin(admin.TabularInline):
@@ -64,9 +73,9 @@ class ItemVariationInLineAdmin(admin.TabularInline):
 
 
 class VariationAdmin(admin.ModelAdmin):
-    list_display = ['item', 'name']
-    list_filter = ['item']
-    search_fields = ['name']
+    list_display = ["item", "name"]
+    list_filter = ["item"]
+    search_fields = ["name"]
     inlines = [ItemVariationInLineAdmin]
 
 

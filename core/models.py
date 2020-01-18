@@ -1,3 +1,4 @@
+# pylint: skip-file
 from django.db.models.signals import post_save
 from django.conf import settings
 from django.db import models
@@ -6,36 +7,35 @@ from django_countries.fields import CountryField
 
 
 CATEGORY_CHOICES = (
-    ('J', 'Jasmine tea'),
-    ('G', 'Green tea'),
-    ('B', 'Black tea'),
-    ('O', 'Oolng tea'),
-    ('H', 'Herbal tea'),
-    ('P', 'Pu erh tea'),
+    ("J", "Jasmine tea"),
+    ("G", "Green tea"),
+    ("B", "Black tea"),
+    ("O", "Oolng tea"),
+    ("H", "Herbal tea"),
+    ("P", "Pu erh tea"),
 )
 
 ORIGIN_CHOICES = (
-    ('C', 'China'),
-    ('J', 'Japan'),
-    ('I', 'India'),
+    ("C", "China"),
+    ("J", "Japan"),
+    ("I", "India"),
 )
 
 LABEL_CHOICES = (
-    ('N', 'New'),
-    ('C', 'Clearance'),
-    ('P', 'Popular'),
-    ('O', 'Out of Stock')
+    ("N", "New"),
+    ("C", "Clearance"),
+    ("P", "Popular"),
+    ("O", "Out of Stock"),
 )
 
 ADDRESS_CHOICES = (
-    ('B', 'Billing'),
-    ('S', 'Shipping'),
+    ("B", "Billing"),
+    ("S", "Shipping"),
 )
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     stripe_customer_id = models.CharField(max_length=50, blank=True, null=True)
     one_click_purchasing = models.BooleanField(default=False)
 
@@ -47,8 +47,7 @@ class Item(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
-    category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=2)
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
     origin = models.CharField(choices=ORIGIN_CHOICES, max_length=2, blank=True)
     label = models.CharField(choices=LABEL_CHOICES, max_length=2, blank=True)
     slug = models.SlugField()
@@ -59,19 +58,13 @@ class Item(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("core:product", kwargs={
-            'slug': self.slug
-        })
+        return reverse("core:product", kwargs={"slug": self.slug})
 
     def get_add_to_cart_url(self):
-        return reverse("core:add-to-cart", kwargs={
-            'slug': self.slug
-        })
+        return reverse("core:add-to-cart", kwargs={"slug": self.slug})
 
     def get_remove_from_cart_url(self):
-        return reverse("core:remove-from-cart", kwargs={
-            'slug': self.slug
-        })
+        return reverse("core:remove-from-cart", kwargs={"slug": self.slug})
 
 
 class Variation(models.Model):
@@ -79,9 +72,7 @@ class Variation(models.Model):
     name = models.CharField(max_length=50)
 
     class Meta:
-        unique_together = (
-            ('item', 'name')
-        )
+        unique_together = ("item", "name")
 
     def __str__(self):
         return self.name
@@ -94,17 +85,14 @@ class ItemVariation(models.Model):
     price = models.FloatField(blank=True, null=True)
 
     class Meta:
-        unique_together = (
-            ('variation', 'value')
-        )
+        unique_together = ("variation", "value")
 
     def __str__(self):
         return self.value
 
 
 class OrderItem(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     item_variations = models.ManyToManyField(ItemVariation)
@@ -129,29 +117,38 @@ class OrderItem(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ref_code = models.CharField(max_length=20, blank=True, null=True)
     items = models.ManyToManyField(OrderItem)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
     shipping_address = models.ForeignKey(
-        'Address', related_name='shipping_address',
-        on_delete=models.SET_NULL, blank=True, null=True)
+        "Address",
+        related_name="shipping_address",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
     billing_address = models.ForeignKey(
-        'Address', related_name='billing_address',
-        on_delete=models.SET_NULL, blank=True, null=True)
+        "Address",
+        related_name="billing_address",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
     payment = models.ForeignKey(
-        'Payment', on_delete=models.SET_NULL, blank=True, null=True)
+        "Payment", on_delete=models.SET_NULL, blank=True, null=True
+    )
     coupon = models.ForeignKey(
-        'Coupon', on_delete=models.SET_NULL, blank=True, null=True)
+        "Coupon", on_delete=models.SET_NULL, blank=True, null=True
+    )
     being_delivered = models.BooleanField(default=False)
     received = models.BooleanField(default=False)
     refund_requested = models.BooleanField(default=False)
     refund_granted = models.BooleanField(default=False)
 
-    '''
+    """
     1. Item added to cart
     2. Adding a billing address
     (Failed checkout)
@@ -160,7 +157,7 @@ class Order(models.Model):
     4. Being delivered
     5. Received
     6. Refunds
-    '''
+    """
 
     def __str__(self):
         return self.user.username
@@ -175,8 +172,7 @@ class Order(models.Model):
 
 
 class Address(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     street_address = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=100)
     country = CountryField(multiple=False)
@@ -188,13 +184,14 @@ class Address(models.Model):
         return self.user.username
 
     class Meta:
-        verbose_name_plural = 'Addresses'
+        verbose_name_plural = "Addresses"
 
 
 class Payment(models.Model):
     stripe_charge_id = models.CharField(max_length=50)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True
+    )
     amount = models.FloatField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
