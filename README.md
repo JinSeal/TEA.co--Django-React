@@ -10,7 +10,7 @@ It turns out one of the bigger challenges was getting it deployed to Heroku.
 _Lesson Learned:_ implement the deployment process as early as possible!
 
 DEMO:
-![Demo](public/static/TEA.gif)
+![Demo](public/static/images/TEA.gif)
 
 ## Directory Layout
 
@@ -28,6 +28,6 @@ DEMO:
 
 ## Potential Improvements
 
-- A bug on navbar loading (Nav component does not remount after login or signup as Nav is outsite routes. try refresh the page).
-- Responsive.
-- CI/CD
+- There's a bug on navbar loading (Nav component does not remount after login or signup as Nav is outsite routes. try refresh the page).
+- Responsive design.
+- Create a CI/CD pipeline.
