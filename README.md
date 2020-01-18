@@ -9,6 +9,9 @@ It turns out one of the bigger challenges was getting it deployed to Heroku.
 
 _Lesson Learned:_ implement the deployment process as early as possible!
 
+DEMO:
+![Demo](./public/TEA.gif)
+
 ## Directory Layout
 
 - `core`: Django application
@@ -18,12 +21,13 @@ _Lesson Learned:_ implement the deployment process as early as possible!
 - `src`: React application
 
 ## Access Control
+
 - Ecommence and Profile work after login.
 - Stripe payment card is rendered when both shipping and billing adresses are present.
 - Some products may come with variations that _must_ be select them before they can be added to the cart.
 
 ## Potential Improvements
-- Better error messages (esp. arround the shopping cart).
-- Some bugs on pageflow (try refresh the page).
-- Better mobile experience.
+
+- A bug on navbar loading (Nav component does not remount after login or signup as Nav is outsite routes. try refresh the page).
+- Responsive.
 - CI/CD

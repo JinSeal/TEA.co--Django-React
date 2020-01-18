@@ -30,6 +30,7 @@ import {
   userIDURL,
   paymentListURL
 } from "../constants";
+import PropTypes from "prop-types";
 
 const UPDATE_FORM = "UPDATE_FORM";
 const CREATE_FORM = "CREATE_FORM";
@@ -51,6 +52,14 @@ class AddressForm extends Component {
     saving: false,
     success: false,
     userID: null
+  };
+
+  static propTypes = {
+    address: PropTypes.object,
+    formType: PropTypes.string,
+    activeItem: PropTypes.string,
+    callback: PropTypes.func,
+    countries: PropTypes.object
   };
 
   componentDidMount() {
@@ -123,6 +132,7 @@ class AddressForm extends Component {
         address_type: activeItem === "Billing Address" ? "B" : "S"
       })
       .then(res => {
+        console.log(res);
         this.setState({
           saving: false,
           success: true,
@@ -145,6 +155,7 @@ class AddressForm extends Component {
         address_type: activeItem === "Billing Address" ? "B" : "S"
       })
       .then(res => {
+        console.log(res);
         this.setState({
           saving: false,
           success: true,
@@ -305,6 +316,9 @@ class Profile extends Component {
     selectedAddress: null
   };
 
+  static propTypes = {
+    isAuthenticated: PropTypes.bool
+  };
   componentDidMount() {
     this.handleFetchAddresses();
     this.handleFetchCountries();
@@ -335,7 +349,10 @@ class Profile extends Component {
   handleDeleteAddress = addressID => {
     authAxios
       .delete(addressDeleteURL(addressID))
-      .then(res => this.handleCallback())
+      .then(res => {
+        console.log(res);
+        this.handleCallback();
+      })
       .catch(err => this.setState({ error: err }));
   };
 

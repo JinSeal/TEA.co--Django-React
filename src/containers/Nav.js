@@ -12,11 +12,23 @@ import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { logout, authCheckState } from "../store/actions/auth";
 import { fetchCart, cartLogout } from "../store/actions/cart";
+import PropTypes from "prop-types";
 
 class Nav extends Component {
   state = {
     fixed: null,
     activeItem: ""
+  };
+
+  static propTypes = {
+    authCheckState: PropTypes.func.isRequired,
+    fetchCart: PropTypes.func.isRequired,
+    authenticated: PropTypes.bool,
+    cart: PropTypes.object,
+    loading: PropTypes.bool,
+    history: PropTypes.object,
+    logout: PropTypes.func.isRequired,
+    cartLogout: PropTypes.func.isRequired
   };
 
   hideFixedMenu = () => this.setState({ fixed: false });

@@ -1,7 +1,6 @@
 import axios from "axios";
 import * as actionTypes from "./actionTypes";
-import { cartLogout, fetchCart } from "./cart";
-import { localhost, production } from "../../constants";
+import { host } from "../../constants";
 
 export const authStart = () => {
   return {
@@ -39,11 +38,11 @@ export const checkAuthTimeout = expirationTime => {
   };
 };
 
-export const authLogin = (username, password, history) => {
+export const authLogin = (username, password) => {
   return dispatch => {
     dispatch(authStart());
     axios
-      .post(`${localhost}/rest-auth/login/`, {
+      .post(`${host}/rest-auth/login/`, {
         username: username,
         password: password
       })
@@ -67,7 +66,7 @@ export const authSignup = (username, email, password1, password2) => {
   return dispatch => {
     dispatch(authStart());
     axios
-      .post(`${localhost}/rest-auth/registration/`, {
+      .post(`${host}/rest-auth/registration/`, {
         username: username,
         email: email,
         password1: password1,

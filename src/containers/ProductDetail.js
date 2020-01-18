@@ -1,31 +1,26 @@
 import React, { Component } from "react";
-import { withRouter, Link, Redirect } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import {
-  Button,
   Card,
   Comment,
   Container,
-  Dimmer,
   Divider,
   Form,
   Grid,
   Header,
   Icon,
   Image,
-  Item,
   Label,
-  Loader,
   Menu,
   Message,
-  Segment,
-  Select,
-  GridColumn
+  Segment
 } from "semantic-ui-react";
 import axios from "axios";
 import { productDetailURL, productListURL, addToCartURL } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
+import PropTypes from "prop-types";
 
 class ProductDetail extends Component {
   state = {
@@ -35,6 +30,12 @@ class ProductDetail extends Component {
     formData: {},
     ads: null,
     msg: null
+  };
+
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    fetchCart: PropTypes.func.isRequired,
+    loading: PropTypes.bool
   };
 
   componentDidMount() {
@@ -86,6 +87,7 @@ class ProductDetail extends Component {
     authAxios
       .post(addToCartURL, { slug, variations })
       .then(res => {
+        console.log(res);
         this.props.fetchCart();
         this.setState({ loading: false });
       })
@@ -111,7 +113,7 @@ class ProductDetail extends Component {
   };
 
   render() {
-    const { data, error, formData, loading, ads, msg } = this.state;
+    const { data, error, formData, ads, msg } = this.state;
     const item = data;
     return (
       <Container style={{ margin: "5em 0" }}>

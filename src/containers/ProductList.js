@@ -19,9 +19,9 @@ import {
   Dropdown
 } from "semantic-ui-react";
 import axios from "axios";
-import { productListURL, addToCartURL, filterListURL } from "../constants";
-import { authAxios } from "../utils";
+import { productListURL, filterListURL } from "../constants";
 import { fetchCart } from "../store/actions/cart";
+import PropTypes from "prop-types";
 
 const FilterForm = (key, filter, checked, func) => {
   return (
@@ -71,6 +71,10 @@ class ProductList extends Component {
       { key: "Home", content: "Home" },
       { key: "Tea", content: "Tea" }
     ]
+  };
+
+  static propTypes = {
+    history: PropTypes.object
   };
 
   componentDidMount() {
@@ -180,7 +184,7 @@ class ProductList extends Component {
   };
 
   renderBreadcrumb = () => {
-    const { Category, Origin, Label, filter, breadcrumb } = this.state;
+    const { Category, Origin, Label, filter } = this.state;
 
     let list = [
       { key: "Home", content: "Home" },

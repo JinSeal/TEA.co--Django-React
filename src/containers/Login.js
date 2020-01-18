@@ -10,11 +10,19 @@ import {
 import { connect } from "react-redux";
 import { NavLink, Redirect } from "react-router-dom";
 import { authLogin } from "../store/actions/auth";
+import PropTypes from "prop-types";
 
 class LoginForm extends React.Component {
   state = {
     username: "",
     password: ""
+  };
+
+  static propTypes = {
+    login: PropTypes.func,
+    error: PropTypes.object,
+    loading: PropTypes.bool,
+    token: PropTypes.string
   };
 
   handleChange = e => {

@@ -10,6 +10,7 @@ import {
 import { connect } from "react-redux";
 import { NavLink, Redirect } from "react-router-dom";
 import { authSignup } from "../store/actions/auth";
+import PropTypes from "prop-types";
 
 class RegistrationForm extends React.Component {
   state = {
@@ -17,6 +18,13 @@ class RegistrationForm extends React.Component {
     email: "",
     password1: "",
     password2: ""
+  };
+
+  static propTypes = {
+    signup: PropTypes.func.isRequired,
+    error: PropTypes.object,
+    loading: PropTypes.bool,
+    token: PropTypes.string
   };
 
   handleSubmit = e => {

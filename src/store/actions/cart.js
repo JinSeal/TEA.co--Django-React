@@ -1,4 +1,3 @@
-import axios from "axios";
 import { authAxios } from "../../utils";
 import {
   CART_START,

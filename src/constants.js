@@ -1,10 +1,9 @@
-export const localhost = "http://127.0.0.1:8000";
-
-export const production = "https://tea-ware.herokuapp.com";
+// export const host = "http://127.0.0.1:8000"
+export const host = "https://tea-ware.herokuapp.com";
 
 const apiURL = "/api";
 
-export const endpoint = `${localhost}${apiURL}`;
+export const endpoint = `${host}${apiURL}`;
 
 export const productListURL = (
   page,

@@ -1,7 +1,6 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import Hoc from "./hoc";
-
+import Nav from "./containers/Nav";
 import Login from "./containers/Login";
 import Signup from "./containers/Signup";
 import ProductList from "./containers/ProductList";
@@ -12,7 +11,8 @@ import Profile from "./containers/Profile";
 import HomepageLayout from "./containers/Home";
 
 const BaseRouter = () => (
-  <Hoc>
+  <>
+    <Nav />
     <Route exact path="/" component={HomepageLayout} />
     <Route path="/login" component={Login} />
     <Route path="/signup" component={Signup} />
@@ -22,7 +22,7 @@ const BaseRouter = () => (
     <Route path="/order-summary" component={OrderSummary} />
     <Route path="/checkout" component={Checkout} />
     <Route path="/profile" component={Profile} />
-  </Hoc>
+  </>
 );
 
 export default BaseRouter;

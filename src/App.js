@@ -4,9 +4,13 @@ import { connect } from "react-redux";
 import BaseRouter from "./routes";
 import * as actions from "./store/actions/auth";
 import "semantic-ui-css/semantic.min.css";
-import CustomLayout from "./containers/Layout";
+import PropTypes from "prop-types";
 
 class App extends Component {
+  static propTypes = {
+    onTryAutoSignup: PropTypes.func
+  };
+
   componentDidMount() {
     this.props.onTryAutoSignup();
   }
@@ -14,9 +18,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <CustomLayout {...this.props}>
-          <BaseRouter />
-        </CustomLayout>
+        <BaseRouter {...this.props} />
       </Router>
     );
   }
@@ -34,7 +36,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
