@@ -1,13 +1,7 @@
 from django.contrib import admin
 
-from .models import Item, OrderItem, Order, Payment, Coupon, Refund, Address, UserProfile, Variation, ItemVariation
-
-
-def make_refund_accepted(modeladmin, request, queryset):
-    queryset.update(refund_requested=False, refund_granted=True)
-
-
-make_refund_accepted.short_description = 'Update orders to refund granted'
+from .models import (Item, OrderItem, Order, Payment, Coupon,
+                     Address, UserProfile, Variation, ItemVariation)
 
 
 class ItemAdmin(admin.ModelAdmin):
@@ -42,7 +36,6 @@ class OrderAdmin(admin.ModelAdmin):
         'user__username',
         'ref_code'
     ]
-    actions = [make_refund_accepted]
 
 
 class AddressAdmin(admin.ModelAdmin):
@@ -82,7 +75,6 @@ admin.site.register(OrderItem)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Payment)
 admin.site.register(Coupon)
-admin.site.register(Refund)
 admin.site.register(Address, AddressAdmin)
 admin.site.register(UserProfile)
 admin.site.register(ItemVariation, ItemVariationAdmin)

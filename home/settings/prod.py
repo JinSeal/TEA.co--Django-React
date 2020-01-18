@@ -1,4 +1,6 @@
 '''Use this for production'''
+# pylint: skip-file
+
 from .base import *
 import os
 import django_heroku

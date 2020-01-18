@@ -1,5 +1,5 @@
-// export const host = "http://127.0.0.1:8000"
-export const host = "https://tea-ware.herokuapp.com";
+export const host = "http://127.0.0.1:8000";
+// export const host = "https://tea-ware.herokuapp.com";
 
 const apiURL = "/api";
 

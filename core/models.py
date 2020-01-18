@@ -1,7 +1,6 @@
 from django.db.models.signals import post_save
 from django.conf import settings
 from django.db import models
-from django.db.models import Sum
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
 
@@ -138,9 +137,11 @@ class Order(models.Model):
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
     shipping_address = models.ForeignKey(
-        'Address', related_name='shipping_address', on_delete=models.SET_NULL, blank=True, null=True)
+        'Address', related_name='shipping_address',
+        on_delete=models.SET_NULL, blank=True, null=True)
     billing_address = models.ForeignKey(
-        'Address', related_name='billing_address', on_delete=models.SET_NULL, blank=True, null=True)
+        'Address', related_name='billing_address',
+        on_delete=models.SET_NULL, blank=True, null=True)
     payment = models.ForeignKey(
         'Payment', on_delete=models.SET_NULL, blank=True, null=True)
     coupon = models.ForeignKey(
@@ -220,6 +221,7 @@ class Refund(models.Model):
 
 
 def userprofile_receiver(sender, instance, created, *args, **kwargs):
+    # pylint: disable=unused-argument,unused-variable
     if created:
         userprofile = UserProfile.objects.create(user=instance)
 
