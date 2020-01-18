@@ -2,10 +2,11 @@ services:
   - docker
 
 before_install:
-  - docker build -t jinseal/teaco .
-
+  - docker build -t jinseal/teaco-pylint -f Dockerfile.pylint .
+  - docker build -t jinseal/teaco-eslint -f Dockerfile.eslint .
 script:
-  - docker run -e CI=true jinseal/teaco pylint home core
+  - docker run -e CI=true jinseal/teaco-pylint pylint home core
+  - docker run -e CI=true jinseal/teaco-eslint node node_modules/eslint/bin/eslint.js  .
 
 deploy:
   provider: heroku
